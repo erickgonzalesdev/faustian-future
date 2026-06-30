@@ -1,0 +1,38 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  theme?: "sans" | "sans-dark";
+}
+
+const {
+  title = "My website",
+  description,
+  theme = "sans",
+} = Astro.props;
+
+const cssFiles: Record<string, string> = {
+  sans: (await import("../styles/sans.css?raw")).default,
+  "sans-dark": (await import("../styles/sans-dark.css?raw")).default,
+};
+
+const css = cssFiles[theme] ?? cssFiles["sans"];
+---
+
+<!doctype html>
+<html lang="en">
+  <title>{title}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {description && <meta name="description" content={description} />}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
+  <style set:html={css}></style>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/issues">Issues</a>
+    <a href="/about">About</a>
+  </nav>
+  <slot />
+</html>
